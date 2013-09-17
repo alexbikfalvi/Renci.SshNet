@@ -70,6 +70,7 @@
     <Compile Include="Common\ChannelOpenFailedEventArgs.cs" />
     <Compile Include="Common\ChannelRequestEventArgs.cs" />
     <Compile Include="Common\Extensions.NET.cs" />
+    <Compile Include="Common\PipeReader.cs" />
     <Compile Include="Common\ProxyException.cs">
       <SubType>Code</SubType>
     </Compile>
