@@ -98,6 +98,18 @@
             }
         }
 
+		/// <summary>
+		/// Gets whether the buffer has more data to read.
+		/// </summary>
+		public bool HasData
+		{
+			get
+			{
+				lock (this._buffer)
+					return this._buffer.Count > 0;
+			}
+		}
+
         #endregion
 
         #region Stream overide methods
@@ -177,11 +189,13 @@
 
             lock (this._buffer)
             {
-                while (!this.ReadAvailable(count))
-                    Monitor.Wait(this._buffer);
+				while (!this.ReadAvailable())
+				{
+					Monitor.Wait(this._buffer);
+				}
 
-                // fill the read buffer
-                for (; readLength < count && Length > 0 && this._buffer.Count > 0; readLength++)
+				// fill the read buffer
+                for (; readLength < count && this._buffer.Count > 0; readLength++)
                 {
                     buffer[readLength] = this._buffer.Dequeue();
                 }
@@ -191,16 +205,24 @@
             return readLength;
         }
 
+		/// <summary>
+		/// Returns whether there is at least one byte available to read from the buffer, unless the reader is non-blocking.
+		/// </summary>
+		/// <returns><c>True</c> if data available; otherwise <c>false</c>.</returns>
+		private bool ReadAvailable()
+		{
+			return (this._buffer.Count > 0 || this._isFlushed) && (this._buffer.Count > 0 || !this._canBlockLastRead);
+		}
+
         /// <summary>
-        /// Returns true if there are
+        /// Returns whether there are count bytes available to read from the buffer, unless the reader is non-blocking.
         /// </summary>
         /// <param name="count">The count.</param>
-        /// <returns><c>True</c> if data available; otherwise<c>false</c>.</returns>
+        /// <returns><c>True</c> if data available; otherwise <c>false</c>.</returns>
         private bool ReadAvailable(int count)
         {
-            return (this.Length >= count || this._isFlushed) &&
-                   (this.Length >= (count + 1) || !this.BlockLastReadBuffer);
-        }
+			return (this._buffer.Count >= count || this._isFlushed) && (this._buffer.Count >= (count + 1) || !this.BlockLastReadBuffer);
+		}
 
         ///<summary>
         ///When overridden in a derived class, writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.
@@ -228,8 +250,13 @@
             lock (this._buffer)
             {
                 // wait until the buffer isn't full
-                while (this.Length >= this._maxBufferLength)
-                    Monitor.Wait(this._buffer);
+				while (this.Length >= this._maxBufferLength)
+				{
+					System.Diagnostics.Debug.WriteLine(string.Format("Wait write: {0} {1}", this.Length, this._maxBufferLength));
+					Monitor.Wait(this._buffer);
+				}
+
+				System.Diagnostics.Debug.WriteLine(string.Format("Write: {0} bytes", count));
 
                 this._isFlushed = false; // if it were flushed before, it soon will not be.
 
