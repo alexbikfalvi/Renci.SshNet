@@ -125,11 +125,6 @@ namespace Renci.SshNet.Common
 		/// <returns>A string containing all characters from the current position to the end of the pipe reader.</returns>
 		public override string ReadToEnd()
 		{
-			// Create a new read buffer.
-			//byte[] readBuffer = new byte[IoUtils.bufferSize];
-			// The output buffer.
-			//byte[] outputBuffer = null;
-
 			// The reading buffer index.
 			int bufferIndex = 0;
 			// The number of bytes read.
