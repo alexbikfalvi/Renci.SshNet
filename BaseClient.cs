@@ -61,7 +61,15 @@ namespace Renci.SshNet
                 {
                     this._keepAliveTimer = new Timer((state) =>
                     {
-                        this.SendKeepAlive();
+						try
+						{
+							this.SendKeepAlive();
+						}
+						catch (Exception exception)
+						{
+							// If an exception occurrs, raise the event.
+							if (this.ErrorOccurred != null) this.ErrorOccurred(this, new ExceptionEventArgs(exception));
+						}
                     });
                 }
 
@@ -180,7 +188,7 @@ namespace Renci.SshNet
 
         }
 
-         private void Session_ErrorOccured(object sender, ExceptionEventArgs e)
+        private void Session_ErrorOccured(object sender, ExceptionEventArgs e)
         {
             var handler = this.ErrorOccurred;
             if (handler != null)
