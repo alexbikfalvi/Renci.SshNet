@@ -138,8 +138,10 @@ namespace Renci.SshNet
                     if (exp.SocketErrorCode == SocketError.ConnectionAborted)
                     {
                         buffer = new byte[length];
-                        this.Disconnect();
-                        return;
+						// Try disconnect, while catching all exceptions.
+						try { this.Disconnect(); }
+						catch { }
+						throw;
                     }
                     else if (exp.SocketErrorCode == SocketError.WouldBlock ||
                        exp.SocketErrorCode == SocketError.IOPending ||

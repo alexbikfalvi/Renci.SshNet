@@ -524,15 +524,22 @@ namespace Renci.SshNet
 
                     this.ExecuteThread(() =>
                     {
-                        try
-                        {
-                            this.MessageListener();
-                        }
-                        finally
-                        {
-                            this._messageListenerCompleted.Set();
-                        }
-                    });
+						try
+						{
+							try
+							{
+								this.MessageListener();
+							}
+							finally
+							{
+								this._messageListenerCompleted.Set();
+							}
+						}
+						catch (Exception exp)
+						{
+							this.RaiseError(exp);
+						}
+					});
 
                     //  Wait for key exchange to be completed
                     this.WaitHandle(this._keyExchangeCompletedWaitHandle);
@@ -1575,23 +1582,16 @@ namespace Renci.SshNet
         /// </summary>
         private void MessageListener()
         {
-            try
+            while (this._socket != null && this._socket.Connected)
             {
-                while (this._socket != null && this._socket.Connected)
+                var message = this.ReceiveMessage();
+
+                if (message == null)
                 {
-                    var message = this.ReceiveMessage();
-
-                    if (message == null)
-                    {
-                        throw new NullReferenceException("The 'message' variable cannot be null");
-                    }
-
-                    this.HandleMessageCore(message);
+                    throw new NullReferenceException("The 'message' variable cannot be null");
                 }
-            }
-            catch (Exception exp)
-            {
-                this.RaiseError(exp);
+
+                this.HandleMessageCore(message);
             }
         }
 
