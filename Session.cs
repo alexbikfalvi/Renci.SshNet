@@ -1899,6 +1899,8 @@ namespace Renci.SshNet
             //  case and should be ignore
             if (connectionException != null && this._isDisconnecting)
                 return;
+			// If the exception wait handle is null, the session is being disposed and the error should be ignored.
+			if (null == this._exceptionWaitHandle) return;
 
             this._exception = exp;
 
