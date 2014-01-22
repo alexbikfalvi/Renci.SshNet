@@ -35,13 +35,31 @@ namespace Renci.SshNet.Common
 		/// <summary>
 		/// Creates a new pipe reader instance for the specified stream.
 		/// </summary>
-		/// <param name="stream"></param>
+		/// <param name="stream">The pipe stream.</param>
 		public PipeReader(PipeStream stream)
 		{
 			if (null == stream) throw new ArgumentNullException("stream");
 
 			// Set the stream.
 			this._stream = stream;
+			// Allocate the buffer.
+			this._buffer = new byte[PipeReader._bufferSize];
+		}
+
+		/// <summary>
+		/// Creates a new pipe reader instance for the specified stream.
+		/// </summary>
+		/// <param name="stream">The pipe stream.</param>
+		/// <param name="encoding">The stream encoding.</param>
+		public PipeReader(PipeStream stream, Encoding encoding)
+		{
+			if (null == stream) throw new ArgumentNullException("stream");
+			if (null == encoding) throw new ArgumentNullException("encoding");
+
+			// Set the stream.
+			this._stream = stream;
+			// Set the encoding.
+			this._encoding = encoding;
 			// Allocate the buffer.
 			this._buffer = new byte[PipeReader._bufferSize];
 		}

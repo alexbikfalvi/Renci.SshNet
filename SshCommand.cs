@@ -63,7 +63,7 @@ namespace Renci.SshNet
         /// <example>
         ///     <code source="..\..\Renci.SshNet.Tests\Classes\SshCommandTest.cs" region="Example SshCommand CreateCommand Execute OutputStream" language="C#" title="Use OutputStream to get command execution output" />
         /// </example>
-        public Stream OutputStream { get; private set; }
+        public PipeStream OutputStream { get; private set; }
 
         /// <summary>
         /// Gets the extended output stream.
@@ -71,7 +71,7 @@ namespace Renci.SshNet
         /// <example>
         ///     <code source="..\..\Renci.SshNet.Tests\Classes\SshCommandTest.cs" region="Example SshCommand CreateCommand Execute ExtendedOutputStream" language="C#" title="Use ExtendedOutputStream to get command debug execution output" />
         /// </example>
-        public Stream ExtendedOutputStream { get; private set; }
+        public PipeStream ExtendedOutputStream { get; private set; }
 
         private StringBuilder _result;
         /// <summary>
@@ -91,10 +91,10 @@ namespace Renci.SshNet
 
                 if (this.OutputStream != null && this.OutputStream.Length > 0)
                 {
-                    using (var sr = new StreamReader(this.OutputStream, this._session.ConnectionInfo.Encoding))
-                    {
-                        this._result.Append(sr.ReadToEnd());
-                    }
+					using (PipeReader reader = new PipeReader(this.OutputStream, this._session.ConnectionInfo.Encoding))
+					{
+						this._result.Append(reader.ReadToEnd());
+					}
                 }
 
                 return this._result.ToString();
@@ -121,7 +121,7 @@ namespace Renci.SshNet
 
                     if (this.ExtendedOutputStream != null && this.ExtendedOutputStream.Length > 0)
                     {
-                        using (var sr = new StreamReader(this.ExtendedOutputStream, this._session.ConnectionInfo.Encoding))
+                        using (PipeReader sr = new PipeReader(this.ExtendedOutputStream, this._session.ConnectionInfo.Encoding))
                         {
                             this._error.Append(sr.ReadToEnd());
                         }

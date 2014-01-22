@@ -250,11 +250,8 @@
                 // wait until the buffer isn't full
 				while (this.Length >= this._maxBufferLength)
 				{
-					System.Diagnostics.Debug.WriteLine(string.Format("Wait write: {0} {1}", this.Length, this._maxBufferLength));
 					Monitor.Wait(this._buffer);
 				}
-
-				System.Diagnostics.Debug.WriteLine(string.Format("Write: {0} bytes", count));
 
                 this._isFlushed = false; // if it were flushed before, it soon will not be.
 
