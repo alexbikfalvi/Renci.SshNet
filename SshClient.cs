@@ -44,7 +44,7 @@ namespace Renci.SshNet
         /// <param name="connectionInfo">The connection info.</param>
         /// <example>
         ///     <code source="..\..\Renci.SshNet.Tests\Classes\PasswordConnectionInfoTest.cs" region="Example PasswordConnectionInfo" language="C#" title="Connect using PasswordConnectionInfo object" />
-        ///     <code source="..\..\Renci.SshNet.Tests\Classes\PasswordConnectionInfoTest.cs" region="Example PasswordConnectionInfo PasswordExpired" language="C#" title="Connect using PasswordConnectionInfo object with passwod change option" />
+        ///     <code source="..\..\Renci.SshNet.Tests\Classes\PasswordConnectionInfoTest.cs" region="Example PasswordConnectionInfo PasswordExpired" language="C#" title="Connect using PasswordConnectionInfo object with password change option" />
         ///     <code source="..\..\Renci.SshNet.Tests\Classes\PrivateKeyConnectionInfoTest.cs" region="Example PrivateKeyConnectionInfo PrivateKeyFile" language="C#" title="Connect using PrivateKeyConnectionInfo" />
         ///     <code source="..\..\Renci.SshNet.Tests\Classes\SshClientTest.cs" region="Example SshClient Connect Timeout" language="C#" title="Specify connection timeout when connecting" />
         /// </example>
